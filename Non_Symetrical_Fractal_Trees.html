@@ -1,0 +1,91 @@
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+    <script src="sketch.js"></script>
+    <script>
+
+//This algorithm creates a fractal tree with asymetry and decreasing angle
+
+var widthScreen = 1000;
+
+
+function setup() {
+  createCanvas(widthScreen, widthScreen);
+  background(0);
+  fractalTree(    PI/2, // Main axis
+                  PI/6, // Angle of the tree
+                  230,  // Length of the first branch
+                  0.73, // Length ratio
+                  15,   // Number of iterations
+                  widthScreen/2, // Begining position X
+                  200, // Begining position Y
+                  0.1, // The angle of the tree decreases by substracting this value
+                 0.8,  // The angle of the tree decreases by this ratio 
+                 true) // Do we apply the decrease of the angle on both sides? true = Asymetry / false = Symetry
+}
+
+function draw() {
+
+}
+
+function fractalTree(mainAxis,angle , length, ratio , n , x , y,decreasingAngle,angleRatio,asymetry){
+  if(n>0){
+  	// For each iteration, we call the drawing of the actual branch
+  	// And we let the next iteration call the drawing of the next branches (2 branches)
+
+  	// Actual Branch:
+    fractalTree(mainAxis,
+                    angle,
+                    length,
+                    ratio,
+                    0,
+                    x ,
+                    y,
+                   decreasingAngle,
+                    angleRatio,
+                   asymetry)    
+
+    // Left side:
+    fractalTree(mainAxis+angle+decreasingAngle,
+                    angle*angleRatio,
+                    length*ratio,
+                    ratio,
+                    n-1,
+                    x+ cos(mainAxis)*length ,
+                    y + sin(mainAxis)*length,
+                   decreasingAngle,
+                    angleRatio,
+                   asymetry)
+
+    // Right side (depends on Asymetry/Symetry)
+    if (asymetry) {
+    fractalTree(mainAxis-angle-decreasingAngle,
+                    angle,
+                    length*ratio,
+                    ratio,
+                    n-1,
+                    x + cos(mainAxis)*length ,
+                    y + sin(mainAxis)*length,
+                   decreasingAngle,
+                    angleRatio,
+                   asymetry)}
+    else {
+    fractalTree(mainAxis-angle-decreasingAngle,
+                    angle*angleRatio,
+                    length*ratio,
+                    ratio,
+                    n-1,
+                    x + cos(mainAxis)*length ,
+                    y + sin(mainAxis)*length,
+                   decreasingAngle,
+                    angleRatio,
+                   asymetry)}    
+    
+}else {
+    // Whenever we end up at the 0 iteration, we draw the branch with the given parameters
+    push()
+    stroke(255)
+    translate(x,y)
+    line(0,0,cos(mainAxis)*length,sin(mainAxis)*length)
+    pop()
+}
+}
+</script>
